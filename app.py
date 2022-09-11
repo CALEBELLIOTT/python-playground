@@ -1,5 +1,6 @@
 
 
+from ast import Num
 from tokenize import String
 
 
@@ -1051,25 +1052,22 @@ def getHandValues(hand):
     values = {}
     for i in range(14):
         values[i + 1] = 0
-    print(values)
     for c in hand:
         value = c[0]
         print(value)
         if value == 'A':
             values[14] += 1
             values[1] += 1
-        values[1] += 1
-        if value == 'K':
+        elif value == 'K':
             values[13] += 1
-        if values == 'Q':
+        elif value == 'Q':
             values[12] += 1
-        if value == 'J':
+        elif value == 'J':
             values[11] += 1
-        if values == 'T':
+        elif value == 'T':
             values[10] += 1
         else:
-            values[value] += 1
-    print(values)
+            values[int(value)] += 1
     return (values)
 
 
