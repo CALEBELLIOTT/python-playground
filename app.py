@@ -1040,12 +1040,15 @@ def evaluateGame(game):
     game = game.split(' ')
     game = [ele for ele in game if ele.strip()]
     player1Hand = game[0:5]
-    player2Hand = game[5:9]
+    # FIXME fix this- only returning 4 cards
+    player2Hand = game[6:10]
+    print(player2Hand)
     player1Values = getHandValues(player1Hand)
+    player2Values = getHandValues(player2Hand)
     player1Flush = evaluateFlush(player1Hand)
     player2Flush = evaluateFlush(player2Hand)
     player1Straight = evaluateStraight(player1Values)
-    print(player1Straight)
+    player2Straight = evaluateStraight(player2Values)
 
 
 def getHandValues(hand):
@@ -1082,12 +1085,12 @@ def evaluateFlush(cards):
 # Returns index of highest card in straight
 def evaluateStraight(cardValues):
     list = cardValues.values()
-    print(list)
     index = 0
     for v in list:
         if v == 1:
             if all(list[index + i] for i in range(5)):
                 return index + 5
+            return False
         index += 1
     return False
 
