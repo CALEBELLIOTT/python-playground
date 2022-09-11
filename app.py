@@ -1026,7 +1026,7 @@ testData = """8C TC KC 9C 4C 7D 2S 5D 3S AC
   3H 7H 6S KC JS QH TD JC 2D 8S
   TH 8H 5C QS TC 9H 4D JC KS JS
   7C 5H KC QH JD AS KH 4C AD 4S
-  5H KH 9H 7H 9H 8D 3S 5D 5C AH"""
+  5H 7H 6H 8H 9H 8D 3S 5D 5C AH"""
 
 
 def pokerEvaluation(data):
@@ -1041,11 +1041,11 @@ def evaluateGame(game):
     game = [ele for ele in game if ele.strip()]
     player1Hand = game[0:5]
     player2Hand = game[5:9]
-    player1HandValues = getHandValues(player1Hand)
-    print(player1HandValues)
+    player1Values = getHandValues(player1Hand)
     player1Flush = evaluateFlush(player1Hand)
     player2Flush = evaluateFlush(player2Hand)
-    player1Straight = evaluateStraight(player1Hand)
+    player1Straight = evaluateStraight(player1Values)
+    print(player1Straight)
 
 
 def getHandValues(hand):
@@ -1054,7 +1054,6 @@ def getHandValues(hand):
         values[i + 1] = 0
     for c in hand:
         value = c[0]
-        print(value)
         if value == 'A':
             values[14] += 1
             values[1] += 1
@@ -1080,8 +1079,17 @@ def evaluateFlush(cards):
     return True
 
 
-def evaluateStraight(cards):
-    return
+# Returns index of highest card in straight
+def evaluateStraight(cardValues):
+    list = cardValues.values()
+    print(list)
+    index = 0
+    for v in list:
+        if v == 1:
+            if all(list[index + i] for i in range(5)):
+                return index + 5
+        index += 1
+    return False
 
 
 pokerEvaluation(testData)
