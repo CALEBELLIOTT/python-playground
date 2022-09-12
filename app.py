@@ -1034,6 +1034,7 @@ def pokerEvaluation(data):
     return player1Wins
 
 
+# Defines rules and conditionals to evaluate hands
 def evaluateGame(game):
     game = game.split(' ')
     game = [ele for ele in game if ele.strip()]
@@ -1047,6 +1048,8 @@ def evaluateGame(game):
     player2Straight = evaluateStraight(player2Values)
     player1HighCard = None
     player2HighCard = None
+
+    # Evaluate for straight flush
     if player2Flush and player2Straight or player1Flush and player1Straight:
         if not player1Flush or not player1Straight:
             return False
@@ -1058,6 +1061,7 @@ def evaluateGame(game):
         print('hitting default')
         return False
 
+    # Evaluate for 4 kind
     player14Kind = evaluateMultiples(4, player1Values)
     player24Kind = evaluateMultiples(4, player2Values)
     if player24Kind or player14Kind:
@@ -1069,10 +1073,10 @@ def evaluateGame(game):
             if player14Kind > player24Kind:
                 return True
             else:
-                # TODO evaluate kicker
                 print('hitting default')
                 return False
 
+    # Evaluate for full house
     player1FullHouse = evaluateFullHouse(player1Values)
     player2FullHouse = evaluateFullHouse(player2Values)
     if player1FullHouse or player2FullHouse:
@@ -1090,6 +1094,7 @@ def evaluateGame(game):
             print('hitting default')
             return False
 
+    # Evaluate for flush
     if player1Flush or player2Flush:
         if not player1Flush:
             return False
@@ -1102,6 +1107,7 @@ def evaluateGame(game):
         print('hitting default')
         return False
 
+    # Evaluate for straight
     if player2Straight or player1Straight:
         if not player1Straight:
             return False
@@ -1112,6 +1118,7 @@ def evaluateGame(game):
         print('hitting default')
         return False
 
+    # Evaluate for 3 of kind
     player1ThreeOfKind = evaluateMultiples(3, player1Values)
     player2ThreeOfKind = evaluateMultiples(3, player2Values)
     if player2ThreeOfKind or player1ThreeOfKind:
@@ -1126,6 +1133,7 @@ def evaluateGame(game):
         print('hitting default')
         return False
 
+    # Evaluate for 2 pair
     player1Pair1 = evaluateMultiples(2, player1Values)
     if player1Pair1:
         player1Pair2 = evaluateMultiples(2, player1Values, player1Pair1)
@@ -1149,10 +1157,10 @@ def evaluateGame(game):
             return False
         if (player2Pair2 > player1Pair2 or player2Pair2 > player1Pair1):
             return False
-            # TODO evaluate kicker here
         print('hitting default 2 pair')
         return False
 
+    # Evaluate for pair
     player1Pair = evaluateMultiples(2, player1Values)
     player2Pair = evaluateMultiples(2, player2Values)
     if player1Pair or player2Pair:
@@ -1172,8 +1180,8 @@ def evaluateGame(game):
             return True
         print('hitting default pair')
         return False
-        # NOTE may have to add kicker here
 
+    # Evaluate high card
     player1HighCard = evaluateHighCard(player1Values)
     player2HighCard = evaluateHighCard(player2Values)
     if player1HighCard > player2HighCard:
