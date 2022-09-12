@@ -1023,7 +1023,7 @@ pokerData = """8C TS KC 9H 4S 7D 2S 5D 3S AC
   AS KD 3D JD 8H 7C 8C 5C QD 6C"""
 
 
-testData = """2C 2C 2D 5C 5C 2D 2S 2D 3S 3C"""
+testData = """5C 5C 2D 2D 4D 9S 3S 3H 2H 2D"""
 
 
 def pokerEvaluation(data):
@@ -1058,6 +1058,7 @@ def evaluateGame(game):
         else:
             if player1Straight > player2Straight:
                 return True
+        print('hitting default')
         return False
 
     player14Kind = evaluateMultiples(4, player1Values)
@@ -1072,6 +1073,7 @@ def evaluateGame(game):
                 return True
             else:
                 # TODO evaluate kicker
+                print('hitting default')
                 return False
 
     player1FullHouse = evaluateFullHouse(player1Values)
@@ -1088,65 +1090,95 @@ def evaluateGame(game):
         if player1FullHouse[1] > player2FullHouse[1]:
             return True
         else:
+            print('hitting default')
             return False
 
     if player1Flush or player2Flush:
+        # print('flush')
+        # print(player1Hand)
+        # print(player2Hand)
         if not player1Flush:
+            # print('player 2 win')
             return False
         if not player2Flush:
+            # print('player 1 win')
             return True
         player1HighCard = evaluateHighCard(player1Values)
         player2HighCard = evaluateHighCard(player2Values)
         if player1HighCard > player2HighCard:
+            # print('player 1 win high card')
             return True
+        print('hitting default')
         return False
 
     if player2Straight or player1Straight:
+        # print(player1Hand)
+        # print(player2Hand)
         if not player1Straight:
+            # print('player 2 win')
             return False
         if not player2Straight:
+            # print('player 1 win')
             return True
         if player1Straight > player2Straight:
+            # print('player 1 win better straight')
             return True
+        print('hitting default')
         return False
 
     player1ThreeOfKind = evaluateMultiples(3, player1Values)
     player2ThreeOfKind = evaluateMultiples(3, player2Values)
     if player2ThreeOfKind or player1ThreeOfKind:
+        # print(player1Hand)
+        # print(player2Hand)
         if not player1ThreeOfKind:
+            # print('player 2 win')
             return False
         if not player2ThreeOfKind:
+            # print('player 1 win')
             return True
         player1HighCard = evaluateHighCard(player1Values)
         player2HighCard = evaluateHighCard(player2Values)
         if player1HighCard > player2HighCard:
+            # print('player 1 win high card')
             return True
         print('hitting default')
         return False
 
-
-# NOTE this is where the total count became super high. If doesn't work later, check here first
-    # player1Pair1 = evaluateMultiples(2, player1Values)
-    # if player1Pair1:
-    #     player1Pair2 = evaluateMultiples(2, player1Values, player1Pair1)
-    # else:
-    #     player1Pair2 = False
-    # player2Pair1 = evaluateMultiples(2, player2Values)
-    # if player2Pair1:
-    #     player2Pair2 = evaluateMultiples(2, player2Values, player2Pair1)
-    # else:
-    #     player2Pair2 = False
-    # if (player1Pair1 and player1Pair2) or (player2Pair1 and player2Pair2):
-    #     if not player1Pair1 and not player1Pair2:
-    #         return False
-    #     if not player2Pair1 and not player2Pair2:
-    #         return True
-    #     if (player1Pair1 > player2Pair2 or player2Pair1):
-    #         return True
-    #     if (player1Pair2 > player2Pair2 or player2Pair1):
-    #         return True
-    #         # TODO evaluate kicker here
-    #     return False
+    player1Pair1 = evaluateMultiples(2, player1Values)
+    if player1Pair1:
+        player1Pair2 = evaluateMultiples(2, player1Values, player1Pair1)
+    else:
+        player1Pair2 = False
+    player2Pair1 = evaluateMultiples(2, player2Values)
+    if player2Pair1:
+        player2Pair2 = evaluateMultiples(2, player2Values, player2Pair1)
+    else:
+        player2Pair2 = False
+    if (player1Pair1 and player1Pair2) or (player2Pair1 and player2Pair2):
+        print(player1Hand)
+        print(player2Hand)
+        if not player1Pair1 or not player1Pair2:
+            print('player 2 win')
+            return False
+        if not player2Pair1 or not player2Pair2:
+            print('player 1 win')
+            return True
+        if (player1Pair1 > player2Pair2 or player1Pair2 > player2Pair1):
+            print('player 1 win check this one ')
+            return True
+        if (player1Pair2 > player2Pair2 or player1Pair2 > player2Pair1):
+            print('player 1 win check this one ')
+            return True
+        if (player2Pair1 > player1Pair2 or player2Pair2 > player1Pair1):
+            print('player 2 win check this one ')
+            return False
+        if (player2Pair2 > player1Pair2 or player2Pair2 > player1Pair1):
+            print('player 2 win check this one ')
+            return False
+            # TODO evaluate kicker here
+        print('hitting default 2 pair')
+        return False
 
     player1Pair = evaluateMultiples(2, player1Values)
     player2Pair = evaluateMultiples(2, player2Values)
@@ -1157,6 +1189,15 @@ def evaluateGame(game):
             return True
         if player1Pair > player2Pair:
             return True
+        if player2Pair > player1Pair:
+            return False
+        player1HighCardOnePair = evaluateHighCard(player1Values, player1Pair)
+        player2HighCardOnePair = evaluateHighCard(player2Values, player2Pair)
+        if player2HighCardOnePair > player1HighCardOnePair:
+            return False
+        if player1HighCardOnePair > player2HighCardOnePair:
+            return True
+        print('hitting default pair')
         return False
         # NOTE may have to add kicker here
 
@@ -1213,7 +1254,7 @@ def evaluateStraight(cardValues):
 
 def evaluateMultiples(number, cardValues, exception=None):
     for v in range(2, 15):
-        if cardValues[v] == number and cardValues[v] != exception:
+        if cardValues[v] == number and v != exception:
             return v
     return False
 
@@ -1228,12 +1269,12 @@ def evaluateFullHouse(cardValues):
 
 
 # NOTE this may not work I dont know. Test later
-def evaluateHighCard(cardValues):
+def evaluateHighCard(cardValues, exception=None):
     cardValuesList = cardValues.values()
     index = 0
     highestIndex = 0
     for c in cardValuesList:
-        if c > 0 and index > highestIndex:
+        if c > 0 and index > highestIndex and c != exception:
             highestIndex = index
         index += 1
     return highestIndex
